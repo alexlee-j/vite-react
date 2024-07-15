@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { DesktopOutlined, CloudServerOutlined } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { Breadcrumb, Layout, Menu, theme } from "antd";
-import { Outlet } from "react-router-dom";
+import { Link, Outlet, useLocation } from "react-router-dom";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -12,19 +12,20 @@ function getItem(
   label: React.ReactNode,
   key: React.Key,
   icon?: React.ReactNode,
-  children?: MenuItem[]
+  children?: MenuItem[],
+  link?: string
 ): MenuItem {
   return {
     key,
     icon,
     children,
-    label,
+    label: link ? <Link to={link}>{label}</Link> : label,
   } as MenuItem;
 }
 
 const items: MenuItem[] = [
-  getItem("服务器", "1", <CloudServerOutlined />),
-  getItem("域名", "2", <DesktopOutlined />),
+  getItem("服务器", "1", <CloudServerOutlined />, undefined, "/"),
+  getItem("域名", "2", <DesktopOutlined />, undefined, "/domain"),
 ];
 
 const Home: React.FC = () => {
@@ -32,6 +33,22 @@ const Home: React.FC = () => {
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
+
+  const location = useLocation();
+  const breadcrumbNameMap: Record<string, string> = {
+    "/": "服务器",
+    "/domain": "域名",
+  };
+
+  const pathSnippets = location.pathname.split("/").filter((i) => i);
+  const breadcrumbItems = pathSnippets.map((_, index) => {
+    const url = `/${pathSnippets.slice(0, index + 1).join("/")}`;
+    return (
+      <Breadcrumb.Item key={url}>
+        <Link to={url}>{breadcrumbNameMap[url]}</Link>
+      </Breadcrumb.Item>
+    );
+  });
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
@@ -45,16 +62,15 @@ const Home: React.FC = () => {
           <Menu
             theme="dark"
             defaultSelectedKeys={["1"]}
+            selectedKeys={[location.pathname]}
             mode="inline"
             items={items}
           ></Menu>
         </Sider>
         <Layout>
           <Content style={{ margin: "0 16px" }}>
-            <Outlet />
-            {/* <Breadcrumb style={{ margin: "16px 0" }}>
-              <Breadcrumb.Item>User</Breadcrumb.Item>
-              <Breadcrumb.Item>Bill</Breadcrumb.Item>
+            <Breadcrumb style={{ margin: "16px 0" }}>
+              {breadcrumbItems}
             </Breadcrumb>
             <div
               style={{
@@ -64,11 +80,11 @@ const Home: React.FC = () => {
                 borderRadius: borderRadiusLG,
               }}
             >
-              这是主内容,第一课react-router
-            </div> */}
+              <Outlet />
+            </div>
           </Content>
           <Footer style={{ textAlign: "center" }}>
-            ©{new Date().getFullYear()}湘ICP备20014625号-1
+            ©{new Date().getFullYear()} 湘ICP备20014625号-1
           </Footer>
         </Layout>
       </Layout>
