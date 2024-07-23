@@ -1,35 +1,18 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { DesktopOutlined, CloudServerOutlined } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { Breadcrumb, Layout, Menu, theme } from "antd";
 import { Link, Outlet, useLocation } from "react-router-dom";
+import { routerMap } from "@/routes";
+import { routerType, menuType } from "@/routes/interface";
 
 const { Header, Content, Footer, Sider } = Layout;
 
 type MenuItem = Required<MenuProps>["items"][number];
 
-function getItem(
-  label: React.ReactNode,
-  key: React.Key,
-  icon?: React.ReactNode,
-  children?: MenuItem[],
-  link?: string
-): MenuItem {
-  return {
-    key,
-    icon,
-    children,
-    label: link ? <Link to={link}>{label}</Link> : label,
-  } as MenuItem;
-}
-
-const items: MenuItem[] = [
-  getItem("服务器", "1", <CloudServerOutlined />, undefined, "/"),
-  getItem("域名", "2", <DesktopOutlined />, undefined, "/domain"),
-];
-
 const Home: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
+  const [routers, setRouters] = useState<MenuItem[]>([]);
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -50,6 +33,38 @@ const Home: React.FC = () => {
     );
   });
 
+  const [selectedKeys, setSelectedKeys] = useState<string[]>([
+    location.pathname,
+  ]);
+
+  useEffect(() => {
+    setSelectedKeys([location.pathname]);
+  }, [location.pathname]);
+
+  const createMenu = (routeMap: routerType[]): MenuItem[] => {
+    return routeMap.map((item) => {
+      return {
+        key: item.meta?.key || item.path || "",
+        icon: item.meta?.icon || null,
+        label: item.meta?.title,
+        children: item.children ? createMenu(item.children) : undefined,
+        disabled: item.meta?.disabled,
+      };
+    });
+  };
+
+  useEffect(() => {
+    const menuRoutes: routerType[] = routerMap[0].children || [];
+    const menuItems = createMenu(menuRoutes);
+    console.log(menuItems);
+
+    setRouters(menuItems);
+  }, []);
+
+  const clickMenu: MenuProps["onClick"] = ({ key }) => {
+    setSelectedKeys([key]);
+  };
+
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <Header style={{ padding: 0, background: colorBgContainer }} />
@@ -61,11 +76,12 @@ const Home: React.FC = () => {
         >
           <Menu
             theme="dark"
-            defaultSelectedKeys={["1"]}
-            selectedKeys={[location.pathname]}
+            triggerSubMenuAction="click"
+            selectedKeys={selectedKeys}
             mode="inline"
-            items={items}
-          ></Menu>
+            items={routers}
+            onClick={clickMenu}
+          />
         </Sider>
         <Layout>
           <Content style={{ margin: "0 16px" }}>
@@ -84,7 +100,14 @@ const Home: React.FC = () => {
             </div>
           </Content>
           <Footer style={{ textAlign: "center" }}>
-            ©{new Date().getFullYear()} 湘ICP备20014625号-1
+            ©{new Date().getFullYear()}
+            <a
+              href="https://beian.miit.gov.cn/"
+              style={{ color: "#495770" }}
+              target="_blank"
+            >
+              湘ICP备20014625号-1
+            </a>
           </Footer>
         </Layout>
       </Layout>
