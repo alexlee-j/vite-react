@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { DesktopOutlined, CloudServerOutlined } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { Breadcrumb, Layout, Menu, theme } from "antd";
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { routerMap } from "@/routes";
 import { routerType, menuType } from "@/routes/interface";
 
@@ -53,15 +53,21 @@ const Home: React.FC = () => {
     });
   };
 
+  const navigate = useNavigate();
   useEffect(() => {
     const menuRoutes: routerType[] = routerMap[0].children || [];
     const menuItems = createMenu(menuRoutes);
     console.log(menuItems);
 
     setRouters(menuItems);
+    if (location.pathname === "/") {
+      navigate("/serves");
+      setSelectedKeys(["/serves"]);
+    }
   }, []);
 
   const clickMenu: MenuProps["onClick"] = ({ key }) => {
+    navigate(key);
     setSelectedKeys([key]);
   };
 

@@ -1,6 +1,6 @@
 import { useRoutes, createBrowserRouter } from "react-router-dom";
 import Layout from "@/views/layout";
-import Home from "@/views/homepage";
+import Serves from "@/views/serves";
 import Domain from "@/views/domain";
 import { routerType } from "./interface";
 
@@ -9,11 +9,15 @@ const routerMap: routerType[] = [
     path: "/",
     element: <Layout />,
     children: [
-      { path: "", element: <Home />, meta: { title: "首页", key: "home" } },
+      {
+        path: "/serves",
+        element: <Serves />,
+        meta: { title: "服务器", key: "/serves" },
+      },
       {
         path: "/domain",
         element: <Domain />,
-        meta: { title: "域名", key: "domain" },
+        meta: { title: "域名", key: "/domain" },
       },
     ],
   },
