@@ -1,0 +1,33 @@
+.title {
+    font-weight: bold;
+}
+.lighthouse-card {
+    background-color: #fff;
+    box-shadow: 0 2px 4px 0 rgba(54, 58, 80, .32);
+    margin-left: auto;
+    margin-right: auto;
+    box-sizing: border-box;
+    border-radius: 0;
+    color: rgba(0, 0, 0, .9);
+    font-size: 12px;
+    padding: 20px;
+}
+.information {
+    &-left {
+        vertical-align: baseline;
+        color: rgba(0, 0, 0, .4);
+        padding-right: 20px;
+        padding-top: 6px;
+        padding-bottom: 6px;
+        width: 100px;
+    }
+    &-right {
+        flex: 1;
+    }
+}
+.popOverContent {
+    max-width: 15vw;
+}
+ul {
+    list-style: decimal !important;
+}
