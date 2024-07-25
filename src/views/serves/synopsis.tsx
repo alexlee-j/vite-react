@@ -47,7 +47,7 @@ const EchartsModel: React.FC = () => {
     <div
       id="main"
       ref={chartRef}
-      style={{ height: "100%", width: "100%" }}
+      style={{ height: "90%", width: "100%" }}
     ></div>
   );
 };
@@ -111,14 +111,17 @@ const Information: React.FC = () => (
     <div>
       {infomationData.map((item) => {
         return (
-          <Flex key={item.key} align="center">
+          <Flex key={item.key} align="start" justify="center">
             <div className="information-left">
               {item.label}
               <Popover content={item.popOverContent} className="popOverContent">
                 <span>{item.icon}</span>
               </Popover>
             </div>
-            <div className="information-right">{item.value}</div>
+            <div
+              className="information-right"
+              dangerouslySetInnerHTML={{ __html: item.value }}
+            ></div>
           </Flex>
         );
       })}
@@ -126,16 +129,15 @@ const Information: React.FC = () => (
   </div>
 );
 const Synopsis: React.FC = () => (
-  <Row gutter={16}>
-    <Col span={12}>
+  <div className="synopsis-wrapper">
+    <div>
       <Information />
-    </Col>
-    <Col span={12}>
-      <div className="lighthouse-card">
-        <EchartsModel />
-      </div>
-    </Col>
-  </Row>
+    </div>
+    <div className="lighthouse-card">
+      <div className="title">实例监控</div>
+      <EchartsModel />
+    </div>
+  </div>
 );
 
 export default Synopsis;

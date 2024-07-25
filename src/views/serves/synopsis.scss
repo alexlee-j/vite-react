@@ -4,14 +4,15 @@
 .lighthouse-card {
     background-color: #fff;
     box-shadow: 0 2px 4px 0 rgba(54, 58, 80, .32);
-    margin-left: auto;
-    margin-right: auto;
+    margin: 10px;
     box-sizing: border-box;
     border-radius: 0;
     color: rgba(0, 0, 0, .9);
     font-size: 12px;
     padding: 20px;
-    height: 100%;
+    height: auto;
+    width: 40vw;
+    max-width: 500px;
 }
 .information {
     &-left {
@@ -24,6 +25,7 @@
     }
     &-right {
         flex: 1;
+        padding-top: 6px;
     }
 }
 .popOverContent {
@@ -31,4 +33,13 @@
 }
 ul {
     list-style: decimal !important;
+}
+.synopsis-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    flex-wrap:wrap;
+    min-width: 1080px;
+    max-width: 60vw;
+    margin: 0 auto;
 }
