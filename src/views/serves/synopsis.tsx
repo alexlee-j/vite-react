@@ -1,8 +1,56 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { Col, Row, Flex, Popover } from "antd";
 import "./synopsis.scss";
 import { InformationData } from "@/types/synopsis";
 import { QuestionCircleOutlined } from "@ant-design/icons";
+import * as echarts from "echarts";
+
+const EchartsModel: React.FC = () => {
+  const chartRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (chartRef.current) {
+      const myChart = echarts.init(chartRef.current);
+
+      myChart.setOption({
+        grid: {
+          left: "10%", // 调整左边距
+          right: "10%", // 调整右边距
+          top: "10%", // 调整上边距
+          bottom: "10%", // 调整下边距
+        },
+        xAxis: {
+          type: "category",
+          data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+        },
+        yAxis: {
+          type: "value",
+          min: 500, // 设置 y 轴的最小值
+          max: 1000, // 设置 y 轴的最大值
+        },
+        series: [
+          {
+            data: [820, 932, 901, 934, 701, 903, 609],
+            type: "line",
+            smooth: true,
+          },
+        ],
+      });
+
+      return () => {
+        myChart.dispose();
+      };
+    }
+  }, []);
+
+  return (
+    <div
+      id="main"
+      ref={chartRef}
+      style={{ height: "100%", width: "100%" }}
+    ></div>
+  );
+};
 
 const infomationData: InformationData[] = [
   {
@@ -83,7 +131,9 @@ const Synopsis: React.FC = () => (
       <Information />
     </Col>
     <Col span={12}>
-      <Information />
+      <div className="lighthouse-card">
+        <EchartsModel />
+      </div>
     </Col>
   </Row>
 );
