@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { Col, Row, Flex, Popover } from "antd";
-import "./synopsis.scss";
+import "./synopsis.less";
 import { InformationData } from "@/types/synopsis";
 import { QuestionCircleOutlined } from "@ant-design/icons";
 import * as echarts from "echarts";

@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "@/styles/reset.css";
+import "antd/dist/reset.css";
 import { Router } from "@/routes/index";
 import { RouterProvider } from "react-router-dom";
 
