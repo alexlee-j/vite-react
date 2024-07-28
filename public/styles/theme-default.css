@@ -1,0 +1,25 @@
+/* 自定义 antd 默认样式 */
+.content-box {
+  background-color: #ffffff;
+  box-shadow: 0 0 12px #0000000d;
+}
+.attribute {
+  color: #909399;
+}
+.text {
+  color: rgba(0, 0, 0, 0.85);
+}
+.base-bg {
+  background-color: #ffffff;
+}
+.content-bg {
+  background-color: #ffffff;
+  border-color: #e4e7ed;
+}
+.icon-style,
+.title {
+  color: rgba(0, 0, 0, 0.85);
+}
+.title {
+  font-weight: bold;
+}

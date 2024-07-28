@@ -14,12 +14,14 @@ const loadStyle = (href: string) => {
   link.href = href;
   head.appendChild(link);
 };
+
 const removeStyle = (href: string) => {
   const links = document.querySelectorAll(
-    `link[rel=stylesheet][href*="${href}.less"]`
+    `link[rel=stylesheet][href*="${href}"]`
   );
   links.forEach((link) => link.parentNode?.removeChild(link));
 };
+
 const ThemeComponent = () => {
   const [open, setOpen] = React.useState(false);
   const darkModeState = useSelector((state: RootState) => state.theme.mode);
@@ -28,6 +30,7 @@ const ThemeComponent = () => {
   const onClose = () => {
     setOpen(false);
   };
+
   const showDrawer = () => {
     setOpen(true);
   };
@@ -45,24 +48,24 @@ const ThemeComponent = () => {
       dispatchDarkMode(changeMode("light"));
     }
   };
+
   useEffect(() => {
     if (darkModeState === "weak") {
       document.getElementById("root")!.style.filter = "invert(100%)";
-      removeStyle("theme-default");
-      removeStyle("theme-dark");
+      removeStyle("styles/theme-default.css");
+      removeStyle("styles/theme-dark.css");
     } else if (darkModeState === "gray") {
       document.getElementById("root")!.style.filter = "grayscale(100%)";
-      removeStyle("theme-default");
-      removeStyle("theme-dark");
+      removeStyle("styles/theme-default.css");
+      removeStyle("styles/theme-dark.css");
     } else if (darkModeState === "dark") {
       document.getElementById("root")!.style.filter = "none";
-      removeStyle("theme-default");
-      loadStyle("/src/styles/theme-dark.less");
+      removeStyle("styles/theme-default.css");
+      loadStyle("/styles/theme-dark.css");
     } else {
       document.getElementById("root")!.style.filter = "none";
-      // 移除暗黑模式的样式
-      removeStyle("theme-dark");
-      loadStyle("/src/styles/theme-default.less");
+      removeStyle("styles/theme-dark.css");
+      loadStyle("/styles/theme-default.css");
     }
   }, [darkModeState]);
 
@@ -105,6 +108,7 @@ const ThemeComponent = () => {
     </div>
   );
 };
+
 const HeaderBar: React.FC = () => {
   return (
     <Flex justify="space-between" align="center" className="header-bar">

@@ -120,7 +120,7 @@ const Information: React.FC = () => (
             </div>
             <div
               className="information-right text"
-              dangerouslySetInnerHTML={{ __html: item.value }}
+              dangerouslySetInnerHTML={{ __html: item.value || "" }}
             ></div>
           </Flex>
         );

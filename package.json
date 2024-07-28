@@ -9,7 +9,8 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "prepare": "husky install",
-    "commit": "cz"
+    "commit": "cz",
+    "build:styles": "lessc src/styles/theme-dark.less public/styles/theme-dark.css && lessc src/styles/theme-default.less public/styles/theme-default.css"
   },
   "config": {
     "commitizen": {
