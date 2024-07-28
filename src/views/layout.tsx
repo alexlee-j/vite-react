@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { DesktopOutlined, CloudServerOutlined } from "@ant-design/icons";
 import type { MenuProps } from "antd";
-import { Breadcrumb, Layout, Menu, theme } from "antd";
+import { Breadcrumb, Layout, Menu, theme, ConfigProvider } from "antd";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
+import HeaderBar from "./headerBar";
 import { routerMap } from "@/routes";
 import { routerType, menuType } from "@/routes/interface";
+import SunCalc from "suncalc";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -71,9 +73,19 @@ const Home: React.FC = () => {
     setSelectedKeys([key]);
   };
 
+  const times = SunCalc.getTimes(
+    new Date(),
+    36.30556423523153,
+    104.48060937499996
+  );
+  // 判断是否是晚上
+  let isDark = new Date() > times.sunset || new Date() < times.sunrise;
+
   return (
     <Layout style={{ minHeight: "100vh" }}>
-      <Header style={{ padding: 0, background: colorBgContainer }} />
+      <Header>
+        <HeaderBar />
+      </Header>
       <Layout>
         <Sider
           collapsible
@@ -89,32 +101,46 @@ const Home: React.FC = () => {
             onClick={clickMenu}
           />
         </Sider>
-        <Layout>
-          <Content style={{ margin: "0 16px" }}>
-            <Breadcrumb style={{ margin: "16px 0" }}>
-              {breadcrumbItems}
-            </Breadcrumb>
-            <div
-              style={{
-                padding: 24,
-                minHeight: 360,
-                background: colorBgContainer,
-                borderRadius: borderRadiusLG,
-              }}
-            >
-              <Outlet />
-            </div>
-          </Content>
-          <Footer style={{ textAlign: "center" }}>
-            ©{new Date().getFullYear()}
-            <a
-              href="https://beian.miit.gov.cn/"
-              style={{ color: "#495770" }}
-              target="_blank"
-            >
-              湘ICP备20014625号-1
-            </a>
-          </Footer>
+        <Layout className="base-bg">
+          <ConfigProvider
+            theme={{
+              algorithm: theme[isDark ? "darkAlgorithm" : "defaultAlgorithm"],
+              token: {
+                colorPrimary: isDark ? "#1DA57A" : "#1890ff",
+                colorBgBase: isDark ? "#141414" : "#fff",
+                colorTextBase: isDark
+                  ? "rgba(255, 255, 255, 0.85)"
+                  : "rgba(0, 0, 0, 0.85)",
+              },
+              cssVar: true,
+            }}
+          >
+            <Content style={{ margin: "0 16px" }}>
+              <Breadcrumb style={{ margin: "16px 0" }}>
+                {breadcrumbItems}
+              </Breadcrumb>
+              <div
+                style={{
+                  padding: 24,
+                  minHeight: 360,
+                  background: colorBgContainer,
+                  borderRadius: borderRadiusLG,
+                }}
+              >
+                <Outlet />
+              </div>
+            </Content>
+            <Footer style={{ textAlign: "center" }}>
+              ©{new Date().getFullYear()}
+              <a
+                href="https://beian.miit.gov.cn/"
+                style={{ color: "#495770" }}
+                target="_blank"
+              >
+                湘ICP备20014625号-1
+              </a>
+            </Footer>
+          </ConfigProvider>
         </Layout>
       </Layout>
     </Layout>

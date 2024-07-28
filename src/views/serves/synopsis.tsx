@@ -106,20 +106,20 @@ const infomationData: InformationData[] = [
 ];
 
 const Information: React.FC = () => (
-  <div className="lighthouse-card">
+  <div className="lighthouse-card content-bg">
     <div className="title">实例信息</div>
     <div>
       {infomationData.map((item) => {
         return (
           <Flex key={item.key} align="start" justify="center">
-            <div className="information-left">
+            <div className="information-left attribute">
               {item.label}
               <Popover content={item.popOverContent} className="popOverContent">
                 <span>{item.icon}</span>
               </Popover>
             </div>
             <div
-              className="information-right"
+              className="information-right text"
               dangerouslySetInnerHTML={{ __html: item.value }}
             ></div>
           </Flex>
@@ -133,7 +133,7 @@ const Synopsis: React.FC = () => (
     <div>
       <Information />
     </div>
-    <div className="lighthouse-card">
+    <div className="lighthouse-card content-bg">
       <div className="title">实例监控</div>
       <EchartsModel />
     </div>
