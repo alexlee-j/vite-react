@@ -1,4 +1,4 @@
-import { useRoutes, createBrowserRouter } from "react-router-dom";
+import { useRoutes, createHashRouter } from "react-router-dom";
 import Layout from "@/views/layout";
 import Serves from "@/views/serves";
 import Domain from "@/views/domain";
@@ -22,5 +22,5 @@ const routerMap: routerType[] = [
     ],
   },
 ];
-const Router = createBrowserRouter(routerMap);
+const Router = createHashRouter(routerMap);
 export { Router, routerMap };

@@ -38,14 +38,14 @@ const ThemeComponent = () => {
   const onchange = (checked: boolean, type: string) => {
     if (checked) {
       if (type === "weak") {
-        dispatchDarkMode(changeMode("weak"));
+        dispatchDarkMode(changeMode({ mode: "weak", userChoose: true }));
       } else if (type === "gray") {
-        dispatchDarkMode(changeMode("gray"));
+        dispatchDarkMode(changeMode({ mode: "gray", userChoose: true }));
       } else {
-        dispatchDarkMode(changeMode("dark"));
+        dispatchDarkMode(changeMode({ mode: "dark", userChoose: true }));
       }
     } else {
-      dispatchDarkMode(changeMode("light"));
+      dispatchDarkMode(changeMode({ mode: "light", userChoose: true }));
     }
   };
 

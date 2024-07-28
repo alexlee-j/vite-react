@@ -42,14 +42,22 @@ const Home: React.FC = () => {
     location.pathname,
   ]);
   const themeMode = useSelector((state: RootState) => state.theme.mode);
+  const userChoose = useSelector((state: RootState) => state.theme.userChoose);
   const times = SunCalc.getTimes(new Date(), 39.9042, 116.4074);
   const dispatchDarkMode = useDispatch();
+  const inNight = new Date() > times.sunset || new Date() < times.sunrise;
 
   const handleDarkTheme = () => {
+    if (userChoose) return;
     if (themeMode == "light") {
       // 在晚上，并且处于白天模式
-      if (new Date() > times.sunset || new Date() < times.sunrise) {
-        dispatchDarkMode(changeMode("dark"));
+      if (inNight) {
+        dispatchDarkMode(changeMode({ mode: "dark" }));
+      }
+    } else if (themeMode == "dark") {
+      // 不在晚上，并且处于黑夜模式
+      if (!inNight) {
+        dispatchDarkMode(changeMode({ mode: "light" }));
       }
     }
   };
@@ -67,7 +75,7 @@ const Home: React.FC = () => {
       window.removeEventListener("mousemove", handleDarkTheme);
       window.removeEventListener("keydown", handleDarkTheme);
     };
-  }, [themeMode, dispatchDarkMode]);
+  }, [themeMode]);
 
   const createMenu = (routeMap: routerType[]): MenuItem[] => {
     return routeMap.map((item) => {
