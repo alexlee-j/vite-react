@@ -7,6 +7,9 @@ import HeaderBar from "./headerBar";
 import { routerMap } from "@/routes";
 import { routerType, menuType } from "@/routes/interface";
 import SunCalc from "suncalc";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "@/redux/store";
+import { changeMode } from "@/redux/modules/themeSlice";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -38,10 +41,33 @@ const Home: React.FC = () => {
   const [selectedKeys, setSelectedKeys] = useState<string[]>([
     location.pathname,
   ]);
+  const themeMode = useSelector((state: RootState) => state.theme.mode);
+  const times = SunCalc.getTimes(new Date(), 39.9042, 116.4074);
+  const dispatchDarkMode = useDispatch();
+
+  const handleDarkTheme = () => {
+    if (themeMode == "light") {
+      // 在晚上，并且处于白天模式
+      if (new Date() > times.sunset || new Date() < times.sunrise) {
+        dispatchDarkMode(changeMode("dark"));
+      }
+    }
+  };
 
   useEffect(() => {
     setSelectedKeys([location.pathname]);
   }, [location.pathname]);
+
+  useEffect(() => {
+    // 添加事件监听器
+    window.addEventListener("mousemove", handleDarkTheme);
+    window.addEventListener("keydown", handleDarkTheme);
+    return () => {
+      // 移除事件监听器
+      window.removeEventListener("mousemove", handleDarkTheme);
+      window.removeEventListener("keydown", handleDarkTheme);
+    };
+  }, [themeMode, dispatchDarkMode]);
 
   const createMenu = (routeMap: routerType[]): MenuItem[] => {
     return routeMap.map((item) => {
@@ -66,20 +92,14 @@ const Home: React.FC = () => {
       navigate("/serves");
       setSelectedKeys(["/serves"]);
     }
+    // 初始化时获取主题
+    handleDarkTheme();
   }, []);
 
   const clickMenu: MenuProps["onClick"] = ({ key }) => {
     navigate(key);
     setSelectedKeys([key]);
   };
-
-  const times = SunCalc.getTimes(
-    new Date(),
-    36.30556423523153,
-    104.48060937499996
-  );
-  // 判断是否是晚上
-  let isDark = new Date() > times.sunset || new Date() < times.sunrise;
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
@@ -104,13 +124,17 @@ const Home: React.FC = () => {
         <Layout className="base-bg">
           <ConfigProvider
             theme={{
-              algorithm: theme[isDark ? "darkAlgorithm" : "defaultAlgorithm"],
+              algorithm:
+                theme[
+                  themeMode === "dark" ? "darkAlgorithm" : "defaultAlgorithm"
+                ],
               token: {
-                colorPrimary: isDark ? "#1DA57A" : "#1890ff",
-                colorBgBase: isDark ? "#141414" : "#fff",
-                colorTextBase: isDark
-                  ? "rgba(255, 255, 255, 0.85)"
-                  : "rgba(0, 0, 0, 0.85)",
+                colorPrimary: themeMode === "dark" ? "#1DA57A" : "#1890ff",
+                colorBgBase: themeMode === "dark" ? "#141414" : "#fff",
+                colorTextBase:
+                  themeMode === "dark"
+                    ? "rgba(255, 255, 255, 0.85)"
+                    : "rgba(0, 0, 0, 0.85)",
               },
               cssVar: true,
             }}
@@ -123,9 +147,8 @@ const Home: React.FC = () => {
                 style={{
                   padding: 24,
                   minHeight: 360,
-                  background: colorBgContainer,
-                  borderRadius: borderRadiusLG,
                 }}
+                className="content-box"
               >
                 <Outlet />
               </div>

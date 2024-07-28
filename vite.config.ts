@@ -10,6 +10,7 @@ export default defineConfig({
       less: {
         javascriptEnabled: true,
         modifyVars: {},
+        additionalData: `@import "@/styles/global.less";`,
       },
     },
   },
