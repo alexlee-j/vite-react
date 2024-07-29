@@ -12,12 +12,12 @@ const routerMap: routerType[] = [
       {
         path: "/serves",
         element: <Serves />,
-        meta: { title: "服务器", key: "/serves" },
+        meta: { title: "Menu.Server", key: "/serves" },
       },
       {
         path: "/domain",
         element: <Domain />,
-        meta: { title: "域名", key: "/domain" },
+        meta: { title: "Menu.Domain", key: "/domain" },
       },
     ],
   },

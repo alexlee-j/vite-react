@@ -5,6 +5,7 @@ import { Router } from "@/routes/index";
 import { RouterProvider } from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "@/redux/store";
+import "@/language";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>

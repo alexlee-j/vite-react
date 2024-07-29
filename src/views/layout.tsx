@@ -10,12 +10,14 @@ import SunCalc from "suncalc";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/redux/store";
 import { changeMode } from "@/redux/modules/themeSlice";
+import { useTranslation } from "react-i18next";
 
 const { Header, Content, Footer, Sider } = Layout;
 
 type MenuItem = Required<MenuProps>["items"][number];
 
 const Home: React.FC = () => {
+  const { t } = useTranslation();
   const [collapsed, setCollapsed] = useState(false);
   const [routers, setRouters] = useState<MenuItem[]>([]);
   const {
@@ -24,8 +26,8 @@ const Home: React.FC = () => {
 
   const location = useLocation();
   const breadcrumbNameMap: Record<string, string> = {
-    "/": "服务器",
-    "/domain": "域名",
+    "/serves": t("Menu.Server"),
+    "/domain": t("Menu.Domain"),
   };
 
   const pathSnippets = location.pathname.split("/").filter((i) => i);
@@ -82,7 +84,7 @@ const Home: React.FC = () => {
       return {
         key: item.meta?.key || item.path || "",
         icon: item.meta?.icon || null,
-        label: item.meta?.title,
+        label: t(item.meta?.title || ""),
         children: item.children ? createMenu(item.children) : undefined,
         disabled: item.meta?.disabled,
       };

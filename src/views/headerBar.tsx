@@ -6,6 +6,7 @@ import "./headerBar.less";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/redux/store";
 import { changeMode } from "@/redux/modules/themeSlice";
+import { useTranslation } from "react-i18next";
 
 const loadStyle = (href: string) => {
   const head = document.getElementsByTagName("head")[0];
@@ -68,37 +69,40 @@ const ThemeComponent = () => {
       loadStyle("/styles/theme-default.css");
     }
   }, [darkModeState]);
+  const { t } = useTranslation();
 
   return (
     <div>
       <IconFont name="theme" onClick={showDrawer} />
-      <Drawer title="主题设置" onClose={onClose} open={open}>
+      <Drawer title={t("Theme.Setting")} onClose={onClose} open={open}>
         <p className="theme-item">
-          暗黑模式
+          {t("Theme.Dark")}
           <Switch
             checked={darkModeState === "dark"}
+            checkedChildren={t("Common.Open")}
+            unCheckedChildren={t("Common.Close")}
             onChange={(e) => {
               onchange(e, "dark");
             }}
           ></Switch>
         </p>
         <p className="theme-item">
-          色弱模式
+          {t("Theme.Weak")}
           <Switch
             checked={darkModeState === "weak"}
-            checkedChildren="开启"
-            unCheckedChildren="关闭"
+            checkedChildren={t("Common.Open")}
+            unCheckedChildren={t("Common.Close")}
             onChange={(e) => {
               onchange(e, "weak");
             }}
           ></Switch>
         </p>
         <p className="theme-item">
-          灰色模式
+          {t("Theme.Gray")}
           <Switch
             checked={darkModeState === "gray"}
-            checkedChildren="开启"
-            unCheckedChildren="关闭"
+            checkedChildren={t("Common.Open")}
+            unCheckedChildren={t("Common.Close")}
             onChange={(e) => {
               onchange(e, "gray");
             }}
@@ -109,13 +113,30 @@ const ThemeComponent = () => {
   );
 };
 
+const LanguageComponent: React.FC = () => {
+  const { t, i18n } = useTranslation();
+  useEffect(() => {}, [i18n.language]);
+
+  return (
+    <div>
+      <button
+        onClick={() => i18n.changeLanguage(i18n.language == "en" ? "zh" : "en")}
+      >
+        {i18n.language == "en" ? "zh" : "en"}
+      </button>
+    </div>
+  );
+};
+
 const HeaderBar: React.FC = () => {
+  const { t } = useTranslation();
   return (
     <Flex justify="space-between" align="center" className="header-bar">
       <div>
         <CloudOutlined className="icon-style" />
-        默默学开发
+        {t("Common.WebsitTitle")}
       </div>
+      <LanguageComponent />
       <ThemeComponent />
     </Flex>
   );
