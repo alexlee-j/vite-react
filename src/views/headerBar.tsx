@@ -6,6 +6,7 @@ import "./headerBar.less";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/redux/store";
 import { changeMode } from "@/redux/modules/themeSlice";
+import { changeLang } from "@/redux/modules/langchange";
 import { useTranslation } from "react-i18next";
 
 const loadStyle = (href: string) => {
@@ -72,7 +73,7 @@ const ThemeComponent = () => {
   const { t } = useTranslation();
 
   return (
-    <div>
+    <span className="ml10">
       <IconFont name="theme" onClick={showDrawer} />
       <Drawer title={t("Theme.Setting")} onClose={onClose} open={open}>
         <p className="theme-item">
@@ -109,23 +110,32 @@ const ThemeComponent = () => {
           ></Switch>
         </p>
       </Drawer>
-    </div>
+    </span>
   );
 };
 
 const LanguageComponent: React.FC = () => {
   const { t, i18n } = useTranslation();
-  useEffect(() => {}, [i18n.language]);
+  const lang = useSelector((state: RootState) => state.lang.lang);
 
-  return (
-    <div>
-      <button
-        onClick={() => i18n.changeLanguage(i18n.language == "en" ? "zh" : "en")}
-      >
-        {i18n.language == "en" ? "zh" : "en"}
-      </button>
-    </div>
-  );
+  const dispatchLang = useDispatch();
+  useEffect(() => {
+    i18n.changeLanguage(lang);
+    console.log(lang, "改变后");
+  }, [lang]);
+  const handleChange = () => {
+    if (lang == "en") {
+      dispatchLang(changeLang({ lang: "zh" }));
+    } else if (lang == "zh") {
+      dispatchLang(changeLang({ lang: "en" }));
+    }
+  };
+
+  if (i18n.language == "en") {
+    return <IconFont name="zhongyingwen1" onClick={handleChange} />;
+  } else {
+    return <IconFont name="zhongyingwen-2" onClick={handleChange} />;
+  }
 };
 
 const HeaderBar: React.FC = () => {
@@ -136,8 +146,10 @@ const HeaderBar: React.FC = () => {
         <CloudOutlined className="icon-style" />
         {t("Common.WebsitTitle")}
       </div>
-      <LanguageComponent />
-      <ThemeComponent />
+      <div>
+        <LanguageComponent />
+        <ThemeComponent />
+      </div>
     </Flex>
   );
 };

@@ -6,11 +6,10 @@ import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import HeaderBar from "./headerBar";
 import { routerMap } from "@/routes";
 import { routerType, menuType } from "@/routes/interface";
-import SunCalc from "suncalc";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { changeMode } from "@/redux/modules/themeSlice";
 import { useTranslation } from "react-i18next";
+import { useDarkTheme } from "@/hooks/theme";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -44,52 +43,22 @@ const Home: React.FC = () => {
     location.pathname,
   ]);
   const themeMode = useSelector((state: RootState) => state.theme.mode);
-  const userChoose = useSelector((state: RootState) => state.theme.userChoose);
-  const times = SunCalc.getTimes(new Date(), 39.9042, 116.4074);
-  const dispatchDarkMode = useDispatch();
-  const inNight = new Date() > times.sunset || new Date() < times.sunrise;
-
-  const handleDarkTheme = () => {
-    if (userChoose) return;
-    if (themeMode == "light") {
-      // 在晚上，并且处于白天模式
-      if (inNight) {
-        dispatchDarkMode(changeMode({ mode: "dark" }));
-      }
-    } else if (themeMode == "dark") {
-      // 不在晚上，并且处于黑夜模式
-      if (!inNight) {
-        dispatchDarkMode(changeMode({ mode: "light" }));
-      }
-    }
-  };
+  const userChoose =
+    useSelector((state: RootState) => state.theme.userChoose) || false;
+  useDarkTheme(userChoose, themeMode);
 
   useEffect(() => {
     setSelectedKeys([location.pathname]);
   }, [location.pathname]);
 
-  useEffect(() => {
-    // 添加事件监听器
-    window.addEventListener("mousemove", handleDarkTheme);
-    window.addEventListener("keydown", handleDarkTheme);
-    return () => {
-      // 移除事件监听器
-      window.removeEventListener("mousemove", handleDarkTheme);
-      window.removeEventListener("keydown", handleDarkTheme);
-    };
-  }, [themeMode]);
-
-  const createMenu = (routeMap: routerType[]): MenuItem[] => {
-    return routeMap.map((item) => {
-      return {
-        key: item.meta?.key || item.path || "",
-        icon: item.meta?.icon || null,
-        label: t(item.meta?.title || ""),
-        children: item.children ? createMenu(item.children) : undefined,
-        disabled: item.meta?.disabled,
-      };
-    });
-  };
+  const createMenu = (routeMap: routerType[]): MenuItem[] =>
+    routeMap.map((item) => ({
+      key: item.meta?.key || item.path || "",
+      icon: item.meta?.icon || null,
+      label: t(item.meta?.title || ""),
+      children: item.children ? createMenu(item.children) : undefined,
+      disabled: item.meta?.disabled,
+    }));
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -102,8 +71,8 @@ const Home: React.FC = () => {
       navigate("/serves");
       setSelectedKeys(["/serves"]);
     }
-    // 初始化时获取主题
-    handleDarkTheme();
+    // // 初始化时获取主题
+    // handleDarkTheme();
   }, []);
 
   const clickMenu: MenuProps["onClick"] = ({ key }) => {
