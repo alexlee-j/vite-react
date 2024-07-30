@@ -7,8 +7,8 @@ import storage from "redux-persist/lib/storage";
 const persistConfig = {
   key: "root",
   storage, // 存储方式
-  whitelist: [], // 需要持久化的数据
-  blacklist: [], // 不需要持久化的数据
+  // whitelist: [], // 需要持久化的数据
+  // blacklist: [], // 不需要持久化的数据
 };
 
 // 合并reducer

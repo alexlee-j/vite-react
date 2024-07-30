@@ -142,8 +142,8 @@ const HeaderBar: React.FC = () => {
   const { t } = useTranslation();
   return (
     <Flex justify="space-between" align="center" className="header-bar">
-      <div>
-        <CloudOutlined className="icon-style" />
+      <div className="wrap-title">
+        <CloudOutlined />
         {t("Common.WebsitTitle")}
       </div>
       <div>

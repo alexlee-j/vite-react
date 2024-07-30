@@ -61,6 +61,7 @@ const Home: React.FC = () => {
     }));
 
   const navigate = useNavigate();
+  const lang = useSelector((state: RootState) => state.lang.lang);
   useEffect(() => {
     const menuRoutes: routerType[] = routerMap[0].children || [];
     const menuItems = createMenu(menuRoutes);
@@ -73,7 +74,7 @@ const Home: React.FC = () => {
     }
     // // 初始化时获取主题
     // handleDarkTheme();
-  }, []);
+  }, [lang]);
 
   const clickMenu: MenuProps["onClick"] = ({ key }) => {
     navigate(key);
