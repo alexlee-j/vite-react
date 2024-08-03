@@ -1,23 +1,25 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useCallback, useMemo } from "react";
 import { Col, Row, Flex, Popover } from "antd";
 import "./synopsis.less";
 import { InformationData } from "@/types/synopsis";
 import { QuestionCircleOutlined } from "@ant-design/icons";
 import * as echarts from "echarts";
+import debounce from "lodash/debounce";
 
 const EchartsModel: React.FC = () => {
   const chartRef = useRef<HTMLDivElement>(null);
+  const chartInstance = useRef<echarts.ECharts | null>(null);
 
-  useEffect(() => {
+  const initChart = useCallback(() => {
     if (chartRef.current) {
       const myChart = echarts.init(chartRef.current);
 
-      myChart.setOption({
+      const options: echarts.EChartsOption = {
         grid: {
-          left: "10%", // 调整左边距
-          right: "10%", // 调整右边距
-          top: "10%", // 调整上边距
-          bottom: "10%", // 调整下边距
+          left: "10%",
+          right: "10%",
+          top: "10%",
+          bottom: "10%",
         },
         xAxis: {
           type: "category",
@@ -25,8 +27,8 @@ const EchartsModel: React.FC = () => {
         },
         yAxis: {
           type: "value",
-          min: 500, // 设置 y 轴的最小值
-          max: 1000, // 设置 y 轴的最大值
+          min: 500,
+          max: 1000,
         },
         series: [
           {
@@ -35,13 +37,27 @@ const EchartsModel: React.FC = () => {
             smooth: true,
           },
         ],
-      });
-
-      return () => {
-        myChart.dispose();
       };
+
+      myChart.setOption(options);
+      chartInstance.current = myChart;
     }
   }, []);
+
+  useEffect(() => {
+    initChart();
+
+    const handleResize = debounce(() => {
+      chartInstance.current?.resize();
+    }, 300);
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      chartInstance.current?.dispose();
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [initChart]);
 
   return (
     <div
@@ -105,29 +121,34 @@ const infomationData: InformationData[] = [
   },
 ];
 
-const Information: React.FC = () => (
-  <div className="lighthouse-card content-bg">
-    <div className="title">实例信息</div>
-    <div>
-      {infomationData.map((item) => {
-        return (
-          <Flex key={item.key} align="start" justify="center">
-            <div className="information-left attribute">
-              {item.label}
-              <Popover content={item.popOverContent} className="popOverContent">
-                <span>{item.icon}</span>
-              </Popover>
-            </div>
-            <div
-              className="information-right text"
-              dangerouslySetInnerHTML={{ __html: item.value || "" }}
-            ></div>
-          </Flex>
-        );
-      })}
+const Information: React.FC = () => {
+  const renderInformation = useMemo(() => {
+    return infomationData.map((item) => (
+      <Flex key={item.key} align="start" justify="center">
+        <div className="information-left attribute">
+          {item.label}
+          {item.icon && (
+            <Popover content={item.popOverContent} className="popOverContent">
+              <span>{item.icon}</span>
+            </Popover>
+          )}
+        </div>
+        <div
+          className="information-right text"
+          dangerouslySetInnerHTML={{ __html: item.value || "" }}
+        ></div>
+      </Flex>
+    ));
+  }, []);
+
+  return (
+    <div className="lighthouse-card content-bg">
+      <div className="title">实例信息</div>
+      <div>{renderInformation}</div>
     </div>
-  </div>
-);
+  );
+};
+
 const Synopsis: React.FC = () => (
   <div className="synopsis-wrapper">
     <div>
