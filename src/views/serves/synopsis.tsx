@@ -3,7 +3,7 @@ import { Col, Row, Flex, Popover } from "antd";
 import "./synopsis.less";
 import { InformationData } from "@/types/synopsis";
 import { QuestionCircleOutlined } from "@ant-design/icons";
-import * as echarts from "echarts";
+import echarts from "@/components/commonEcharts";
 import debounce from "lodash/debounce";
 
 const EchartsModel: React.FC = () => {
@@ -14,7 +14,7 @@ const EchartsModel: React.FC = () => {
     if (chartRef.current) {
       const myChart = echarts.init(chartRef.current);
 
-      const options: echarts.EChartsOption = {
+      const options: echarts.EChartsCoreOption = {
         grid: {
           left: "10%",
           right: "10%",
